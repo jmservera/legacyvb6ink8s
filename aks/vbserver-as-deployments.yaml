@@ -1,0 +1,158 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vbserver-one
+  labels:
+    app: vbserver-one
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vbserver-one
+  template:
+    metadata:
+      labels:
+        app: vbserver-one
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: vbserver-one
+        image: jmaks.azurecr.io/vbserver:2.0
+        ports:
+        - containerPort: 7
+          name: echo
+        - containerPort: 9
+          name: discard
+        - containerPort: 13
+          name: daytime
+        - containerPort: 17
+          name: quotd
+        - containerPort: 19
+          name: chargen
+      tolerations:
+      - key: "os"
+        operator: "Equal"
+        value: "windows"
+        effect: "NoSchedule"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vbserver-one
+spec:
+  selector:
+    app: vbserver-one
+  ports:
+    - protocol: TCP
+      port: 19
+      targetPort: 19
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vbserver-two
+  labels:
+    app: vbserver-two
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vbserver-two
+  template:
+    metadata:
+      labels:
+        app: vbserver-two
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: vbserver-two
+        image: jmaks.azurecr.io/vbserver:2.0
+        ports:
+        - containerPort: 7
+          name: echo
+        - containerPort: 9
+          name: discard
+        - containerPort: 13
+          name: daytime
+        - containerPort: 17
+          name: quotd
+        - containerPort: 19
+          name: chargen
+      tolerations:
+      - key: "os"
+        operator: "Equal"
+        value: "windows"
+        effect: "NoSchedule"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vbserver-two
+spec:
+  selector:
+    app: vbserver-two
+  ports:
+    - protocol: TCP
+      port: 19
+      targetPort: 19
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vbserver-three
+  labels:
+    app: vbserver-three
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vbserver-three
+  template:
+    metadata:
+      labels:
+        app: vbserver-three
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: vbserver-three
+        image: jmaks.azurecr.io/vbserver:2.0
+        ports:
+        - containerPort: 7
+          name: echo
+        - containerPort: 9
+          name: discard
+        - containerPort: 13
+          name: daytime
+        - containerPort: 17
+          name: quotd
+        - containerPort: 19
+          name: chargen
+      tolerations:
+      - key: "os"
+        operator: "Equal"
+        value: "windows"
+        effect: "NoSchedule"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vbserver-three
+spec:
+  selector:
+    app: vbserver-three
+  ports:
+    - protocol: TCP
+      port: 19
+      targetPort: 19

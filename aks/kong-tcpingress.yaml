@@ -1,0 +1,43 @@
+apiVersion: configuration.konghq.com/v1beta1
+kind: TCPIngress
+metadata:
+  name: vbserver-one
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - host: vbserverone.lessgreen.org
+    port: 19419
+    backend:
+      serviceName: vbserver-one
+      servicePort: 19
+---
+
+apiVersion: configuration.konghq.com/v1beta1
+kind: TCPIngress
+metadata:
+  name: vbserver-two
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - host: vbservertwo.lessgreen.org
+    port: 19419
+    backend:
+      serviceName: vbserver-two
+      servicePort: 19
+
+---
+
+apiVersion: configuration.konghq.com/v1beta1
+kind: TCPIngress
+metadata:
+  name: vbserver-three
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - port: 19019
+    backend:
+      serviceName: vbserver-three
+      servicePort: 19
