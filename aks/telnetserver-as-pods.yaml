@@ -9,10 +9,18 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-one
-    image: jmaks.azurecr.io/vbserver:3.2
+    image: jmaks.azurecr.io/vbserver:2.0
     ports:
-    - containerPort: 9001
-      name: telnet
+    - containerPort: 7
+      name: echo
+    - containerPort: 9
+      name: discard
+    - containerPort: 13
+      name: daytime
+    - containerPort: 17
+      name: quotd
+    - containerPort: 19
+      name: chargen
   tolerations:
   - key: "os"
     operator: "Equal"
@@ -23,15 +31,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vbserver-one-lb
+  name: vbserver-one
 spec:
-  type: LoadBalancer
   selector:
     app: vbserver-one
   ports:
     - protocol: TCP
-      port: 9001
-      targetPort: 9001
+      port: 19
+      targetPort: 19
 
 ---
 
@@ -46,10 +53,18 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-two
-    image: jmaks.azurecr.io/vbserver:3.2
+    image: jmaks.azurecr.io/vbserver:2.0
     ports:
-    - containerPort: 9001
-      name: telnet
+    - containerPort: 7
+      name: echo
+    - containerPort: 9
+      name: discard
+    - containerPort: 13
+      name: daytime
+    - containerPort: 17
+      name: quotd
+    - containerPort: 19
+      name: chargen
   tolerations:
   - key: "os"
     operator: "Equal"
@@ -60,15 +75,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vbserver-two-lb
+  name: vbserver-two
 spec:
-  type: LoadBalancer
   selector:
     app: vbserver-two
   ports:
     - protocol: TCP
-      port: 9001
-      targetPort: 9001
+      port: 19
+      targetPort: 19
+
+
 ---
 
 apiVersion: v1
@@ -81,26 +97,37 @@ spec:
   nodeSelector:
     "kubernetes.io/os": windows
   containers:
-  - name: vbserver-three
-    image: jmaks.azurecr.io/vbserver:3.2
+  - name: vbserver-two
+    image: jmaks.azurecr.io/vbserver:2.0
     ports:
-    - containerPort: 9001
-      name: telnet
-    readinessProbe:
-      tcpSocket:
-        port: 9001
-      initialDelaySeconds: 5
-      periodSeconds: 10
-    livenessProbe:
-      tcpSocket:
-        port: 9001
-      initialDelaySeconds: 15
-      periodSeconds: 20
+    - containerPort: 7
+      name: echo
+    - containerPort: 9
+      name: discard
+    - containerPort: 13
+      name: daytime
+    - containerPort: 17
+      name: quotd
+    - containerPort: 19
+      name: chargen
   tolerations:
   - key: "os"
     operator: "Equal"
     value: "windows"
     effect: "NoSchedule"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vbserver-three
+spec:
+  selector:
+    app: vbserver-three
+  ports:
+    - protocol: TCP
+      port: 19
+      targetPort: 19
 ---
 
 apiVersion: v1
@@ -113,5 +140,5 @@ spec:
     app: vbserver-three
   ports:
     - protocol: TCP
-      port: 9001
-      targetPort: 9001
+      port: 19
+      targetPort: 19

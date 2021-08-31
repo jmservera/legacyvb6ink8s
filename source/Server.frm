@@ -11,7 +11,8 @@ Begin VB.Form Server
    ScaleWidth      =   7305
    StartUpPosition =   3  'Windows Default
    Visible         =   0   'False
-   Begin MSWinsockLib.Winsock Winsock1 
+   Begin MSWinsockLib.Winsock tcpServer 
+      Index           =   0
       Left            =   360
       Top             =   3360
       _ExtentX        =   741
@@ -25,45 +26,70 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private intMax As Long
+
+Public Running As Boolean
+
 Private Sub Form_Load()
-    Do
-        If Winsock1.State <> sckConnected And Winsock1.State <> sckListening Then ' check if port is open, then open it
-            Winsock1.Close 'All the connections are switched off
-            Winsock1.Listen ''Listen port for incoming connections
-            Log ("Listening in port: " + CStr(Winsock1.LocalPort))
+    Running = True
+    
+    On Error GoTo ProcError
+    intMax = 0
+    tcpServer(0).LocalPort = 9001
+    
+     Do
+        If tcpServer(0).State <> sckConnected And tcpServer(0).State <> sckListening Then ' check if port is open, then open it
+            tcpServer(0).Close 'All the connections are switched off
+            tcpServer(0).Listen ''Listen port for incoming connections
+            LogMessage "port_listen", CStr(tcpServer(0).LocalPort)
         End If
         DoEvents
     Loop
+    Exit Sub
+ProcError:
+    Running = False
+    
+  LogError Err.Number, Err.Source, Err.Description
+  End
 End Sub
 
-Private Sub Winsock1_Error(ByVal Number As Integer, Description As String, ByVal Scode As Long, ByVal Source As String, ByVal HelpFile As String, ByVal HelpContext As Long, CancelDisplay As Boolean)
-    Log ("error number:" + CStr(Number) + " scode: " + CStr(Scode) + " desc: " + Description)
+Private Sub tcpServer_Error(index As Integer, ByVal Number As Integer, Description As String, ByVal Scode As Long, ByVal Source As String, ByVal HelpFile As String, ByVal HelpContext As Long, CancelDisplay As Boolean)
+    LogError Number, Source, Description
 End Sub
 
-Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
+Private Sub tcpServer_ConnectionClose(index As Integer, ByVal requestid As Long)
+
+End Sub
+
+
+Private Sub tcpServer_DataArrival(index As Integer, ByVal bytesTotal As Long)
         Dim Data As String
 
-        Winsock1.GetData Data
+        tcpServer(index).GetData Data
 
-        Log ("Data Received: " + Data)
+        LogTrace "data", Data
 
-        If Data = "SHUTDOWN" Or Data = "SHUTDOWN" + vbCrLf Or Data = "ShutDown" + vbLf Then
-            Winsock1.SendData ("Goodbye, server shutdown started" + vbCrLf)
-            Log ("Shutting down server")
-            End ' COMMAND FOR SERVER SHUTDOWN
+        If Data = "SHUTDOWN" Or Data = "SHUTDOWN" + vbCrLf Or Data = "Shutdown" + vbLf Then
+            tcpServer(index).SendData ("Goodbye, server shutdown started" + vbCrLf)
+            DoEvents
+            LogMessage "shutdown", ""
+            End
         End If
         
         If Data = vbCr Or Data = vbLf Or Data = vbCrLf Then
-           Winsock1.SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN RECEIVED END OF LINE
+           tcpServer(index).SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN RECEIVED END OF LINE
         End If
 End Sub
 
-Private Sub Winsock1_ConnectionRequest(ByVal requestID As Long)
-        Winsock1.Close ' CLOSE PRIOR CONNECTION
-        Winsock1.Accept requestID
-               
-        Log ("Connection requested from host: " + Winsock1.RemoteHostIP + " with id: " + CStr(requestID))
-        
-        ' SEND SERVER INFO TO CLIENT
-        Winsock1.SendData ("Connected to server: " + Winsock1.LocalHostName + vbCrLf)
+Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Long)
+        LogMessage "connection_request", tcpServer(index).RemoteHostIP
+
+        If index = 0 Then
+            intMax = intMax + 1
+            Load tcpServer(intMax)
+            tcpServer(intMax).LocalPort = 0
+            tcpServer(intMax).Accept requestid
+            ' SEND SERVER INFO TO CLIENT
+            tcpServer(intMax).SendData ("Connected to server: " + tcpServer(intMax).LocalHostName + vbCrLf)
+        End If
 End Sub
