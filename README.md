@@ -1,4 +1,4 @@
-# VB6 in a Container PoC
+# Legacy VB6 in Kubernetes - a PoC
 
 This is a small PoC of a container that runs a VB6 code TCP server, to test how to move a legacy application to
 K8s and how to manage the raw TCP traffic into it.
