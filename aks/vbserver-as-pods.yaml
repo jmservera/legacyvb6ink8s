@@ -77,6 +77,11 @@ metadata:
   name: vbserver-three
   labels:
     app: vbserver-three
+    name: vbserver-three
+  annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9144"
+      prometheus.io/path: /metrics
 spec:
   nodeSelector:
     "kubernetes.io/os": windows
@@ -86,6 +91,8 @@ spec:
     ports:
     - containerPort: 9001
       name: telnet
+    - containerPort: 9144
+      name: metrics
     readinessProbe:
       tcpSocket:
         port: 9001
@@ -115,3 +122,4 @@ spec:
     - protocol: TCP
       port: 9001
       targetPort: 9001
+
