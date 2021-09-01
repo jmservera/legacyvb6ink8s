@@ -6,7 +6,10 @@
 
 > For monitoring run this helm chart before applying the monitor-targets.yaml:
 ```sh
-helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring --set prometheus-node-exporter.nodeSelector."beta\.kubernetes\.io/os"=linux --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring \
+    --set prometheus-node-exporter.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+    --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 ```
 
 [windows_exporter]:https://github.com/prometheus-community/windows_exporter
