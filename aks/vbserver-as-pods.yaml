@@ -4,6 +4,7 @@ metadata:
   name: vbserver-one
   labels:
     app: vbserver-one
+    m-app: vbserver
 spec:
   nodeSelector:
     "kubernetes.io/os": windows
@@ -13,6 +14,8 @@ spec:
     ports:
     - containerPort: 9001
       name: telnet
+    - containerPort: 9144
+      name: metrics
   tolerations:
   - key: "os"
     operator: "Equal"
@@ -40,6 +43,7 @@ kind: Pod
 metadata:
   name: vbserver-two
   labels:
+    m-app: vbserver
     app: vbserver-two
 spec:
   nodeSelector:
@@ -50,6 +54,8 @@ spec:
     ports:
     - containerPort: 9001
       name: telnet
+    - containerPort: 9144
+      name: metrics
   tolerations:
   - key: "os"
     operator: "Equal"
@@ -76,6 +82,7 @@ kind: Pod
 metadata:
   name: vbserver-three
   labels:
+    m-app: vbserver
     app: vbserver-three
     name: vbserver-three
   annotations:

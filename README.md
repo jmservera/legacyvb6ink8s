@@ -9,8 +9,15 @@ In the `source` folder there is a `link.bat` file that will compile the VB6 code
 
 Inside the [app](./app) folder you can find the compiled version of the code found in the `source` folder, along with some files needed to run a VB6 application, like the VBA6.dll, VB6.OLB, msvbvm60.dll and the MSWINSCK.OCX component, needed to run a simple TCP server in VB6.
 
+There's also a [Grok exporter][grok_exporter] configuration file, that contains the templates for scrapping the application log and publishing [Prometheus][prometheus] metrics.
+
 You will also find some example Dockerfiles for running a simple telnet server in Windows, and installing the sql tools on a container, to test different things that you may need in a VB6 app. Take a look at the [extras](./extras) folder.
 
 Inside the [aks](./aks) folder there are some yaml examples to run this container and to create a tcp ingress with kong to provide access to the service from outside.
 
+You can find extended information in the `README.md` files for each folder.
+
 > Remember that all this code is provided as is, without any warranty, and it is not intended to be used in production.
+
+[grok_exporter]:https://github.com/fstab/grok_exporter
+[prometheus]:https://prometheus.io/
