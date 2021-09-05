@@ -8,7 +8,7 @@ LABEL maintainer="https://github.com/jmservera"                                 
     org.opencontainers.image.url="[pending]"                                            `
     org.opencontainers.image.title=sqltools                                             `
     org.opencontainers.image.description="Windows container with the MsSQLCmdLn Utils"  `
-    org.opencontainers.image.source="https://github.com/jmservera/vb6docker"         
+    org.opencontainers.image.source="https://github.com/jmservera/legacyvb6ink8s"         
 
 ADD https://aka.ms/vs/16/release/vc_redist.x64.exe c:\temp\vc_redist.x64.exe
 ADD https://go.microsoft.com/fwlink/?linkid=2156851 c:\temp\msodbcsql.msi

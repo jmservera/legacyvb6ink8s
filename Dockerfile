@@ -15,7 +15,7 @@ LABEL maintainer="https://github.com/jmservera"                                 
     org.opencontainers.image.url="[pending]"                                            `
     org.opencontainers.image.title="VB6 PoC"                                             `
     org.opencontainers.image.description="Windows container with a small VB6 PoC"  `
-    org.opencontainers.image.source="https://github.com/jmservera/vb6docker" 
+    org.opencontainers.image.source="https://github.com/jmservera/legacyvb6ink8s" 
 
 RUN md c:\app c:\temp c:\grok
 WORKDIR c:\app

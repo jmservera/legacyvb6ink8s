@@ -7,7 +7,7 @@ LABEL maintainer="https://github.com/jmservera"                                 
     org.opencontainers.image.url="[pending]"                                            `
     org.opencontainers.image.title=SimpleTCP                                            `
     org.opencontainers.image.description="Windows container with the SimpleTCP services to test connectivity" `
-    org.opencontainers.image.source="https://github.com/jmservera/vb6docker"     
+    org.opencontainers.image.source="https://github.com/jmservera/legacyvb6ink8s"     
 
 RUN Dism /online /Enable-Feature /FeatureName:SimpleTCP /All
 EXPOSE 7
