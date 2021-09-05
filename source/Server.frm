@@ -77,7 +77,7 @@ Private Sub tcpServer_DataArrival(index As Integer, ByVal bytesTotal As Long)
         End If
         
         If Data = vbCr Or Data = vbLf Or Data = vbCrLf Then
-           tcpServer(index).SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN RECEIVED END OF LINE
+           tcpServer(index).SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN END OF LINE IS RECEIVED
         End If
 End Sub
 
