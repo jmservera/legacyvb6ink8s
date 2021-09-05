@@ -35,6 +35,6 @@ COPY --from=grok c:\temp\grok_exporter-1.0.0.RC5.windows-amd64 c:\grok
        # app port   # windows exporter  # grok exporter
 EXPOSE 9001         9182                9144
 
-COPY .\app\ c:\app\
+COPY .\app c:\app
 
 CMD ["start.bat"]
