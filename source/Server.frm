@@ -141,6 +141,7 @@ Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Lon
                 DoEvents
             End If
 subConnect:
+            LogTrace "INTMAX", CStr(intMax)
             tcpServer(intMax).LocalPort = 0
             tcpServer(intMax).Accept requestid
             ' SEND SERVER INFO TO CLIENT

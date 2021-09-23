@@ -30,6 +30,12 @@ metrics:
   match: "%{TIMESTAMP_ISO8601} TRACE CONNECTED: \'%{INT:connectioncount}\'"
   value: '{{.connectioncount}}'
   cumulative: false
+- type: gauge
+  name: app_intMax
+  help: Index of the last connection
+  match: "%{TIMESTAMP_ISO8601} TRACE INTMAX: \'%{INT:intmax}\'"
+  value: '{{.intmax}}'
+  cumulative: false
 server:
   protocol: http
   port: 9144
