@@ -50,7 +50,7 @@ Private Sub Form_Load()
 '    Me.Show
     
     Running = True
-    On Error GoTo ProcError
+    On Error GoTo procError
     intMax = 0
     tcpServer(0).LocalPort = 9001
     lastTime = Now
@@ -71,18 +71,16 @@ Private Sub Form_Load()
         End If
     Loop
     Exit Sub
-ProcError:
-    Running = False
-    
+procError:
+  Running = False
   LogError Err.Number, Err.Source, Err.Description
-  End
 End Sub
-
 
 Private Sub reviewTimer()
     Dim i As Long
     Dim count As Long
     
+    On Error GoTo procError
     If intMax > 0 Then
         For i = 1 To tcpServer.UBound
             If tcpServer(i).State = sckConnected Then
@@ -92,27 +90,27 @@ Private Sub reviewTimer()
         Next
     End If
     LogTrace "CONNECTED", CStr(count)
+    Exit Sub
+procError:
+  LogError Err.Number, Err.Source, Err.Description
 End Sub
 
 Private Sub Form_Resize()
-Text1.Top = 10
-Text1.Left = 10
-Text1.Width = Me.ScaleWidth - 55
-Text1.Height = Me.ScaleHeight - 55
+    Text1.Top = 10
+    Text1.Left = 10
+    Text1.Width = Me.ScaleWidth - 55
+    Text1.Height = Me.ScaleHeight - 55
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
     Running = False
-    
 End Sub
 
 Private Sub tcpServer_Error(index As Integer, ByVal Number As Integer, Description As String, ByVal Scode As Long, ByVal Source As String, ByVal HelpFile As String, ByVal HelpContext As Long, CancelDisplay As Boolean)
-    removeServer (index)
     LogError Number, Source, Description
 End Sub
 
 Private Sub tcpServer_ConnectionClose(index As Integer, ByVal requestid As Long)
-    removeServer (index)
     LogTrace "CLOSE", CStr(index) & " " & CStr(requestid)
 End Sub
 
@@ -120,8 +118,9 @@ End Sub
 Private Sub tcpServer_DataArrival(index As Integer, ByVal bytesTotal As Long)
         Dim Data As String
 
+        On Error GoTo dataError
         If bytesTotal > 0 Then
-            'On Error GoTo dataError
+            
             tcpServer(index).GetData Data
     
             LogTrace "data", Data
@@ -137,7 +136,6 @@ Private Sub tcpServer_DataArrival(index As Integer, ByVal bytesTotal As Long)
                tcpServer(index).SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN END OF LINE IS RECEIVED
             End If
         End If
-        On Error GoTo 0
         Exit Sub
 dataError:
     LogError Err.Number, Err.Source, Err.Description
@@ -146,6 +144,8 @@ End Sub
 
 Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Long)
         Dim i As Long
+
+        On Error GoTo procError
         
         LogMessage "connection_request", tcpServer(index).RemoteHostIP
 
@@ -165,12 +165,11 @@ Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Lon
                     If tcpServer(i).State <> sckConnected Then
                         intMax = i
                         tcpServer(i).Close
-                        DoEvents
                         GoTo subConnect
                     Else
                         If i = tcpServer.UBound Then
                             LogError "-1", "tcpServer_ConnectionRequest", "Not available connections"
-                            GoTo subEnd
+                            Exit Sub
                         End If
                     End If
                 Next
@@ -183,17 +182,13 @@ subConnect:
         Else
             LogError "-1", "tcpServer_ConnectionRequest", "Invalid connection request to index: " & CStr(index) & ". This should never happen"
         End If
-subEnd:
-
+        Exit Sub
+procError:
+    LogError Err.Number, Err.Source, Err.Description
 End Sub
 
-Private Sub removeServer(index As Long)
-    If index <= tcpServer.UBound Then
-        If Not tcpServer(index) Is Nothing Then
-            tcpServer(index).Close
-            DoEvents
-        End If
+Private Sub Text1_Change()
+    If Len(Text1.Text) > 8196 Then
+        Text1.Text = Mid(Text1.Text, 4096, Len(Text1.Text) - 4096)
     End If
-    DoEvents
 End Sub
-

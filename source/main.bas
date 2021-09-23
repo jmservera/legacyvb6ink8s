@@ -5,24 +5,13 @@ Attribute VB_Name = "MainModule"
 '
 ' This code requires a reference to Microsoft Scripting Runtime
 ' used for console output
-Private sout As Scripting.TextStream
-Private server1 As New Server
 Option Explicit
 
-Private Declare Sub GetLocalTime Lib "kernel32" (lpSystemTime As SYSTEMTIME)
-Private Type SYSTEMTIME
-    wYear As Integer
-    wMonth As Integer
-    wDayOfWeek As Integer
-    wDay As Integer
-    wHour As Integer
-    wMinute As Integer
-    wSecond As Integer
-    wMilliseconds As Integer
-End Type
+Private sout As Scripting.TextStream
+Private server1 As New Server
 
 Sub Main()
-   On Error GoTo ProcError
+   On Error GoTo procError
       
    Dim FSO As New Scripting.FileSystemObject
    Set sout = FSO.GetStandardStream(StdOut)
@@ -35,7 +24,7 @@ ProcExit:
    Set sout = Nothing
   Exit Sub
 
-ProcError:
+procError:
   LogError Err.Number, Err.Source, Err.Description
   Resume ProcExit
 End Sub
