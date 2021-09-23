@@ -10,12 +10,25 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-one
-    image: jmaks.azurecr.io/vbserver:3.2
+    image: jmaks.azurecr.io/vbserver:3.6
     ports:
     - containerPort: 9001
       name: telnet
     - containerPort: 9144
       name: metrics
+    resources:
+      limits:
+        memory: 350Mi
+    readinessProbe:
+      tcpSocket:
+        port: 9001
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    livenessProbe:
+      tcpSocket:
+        port: 9001
+      initialDelaySeconds: 15
+      periodSeconds: 20
   tolerations:
   - key: "os"
     operator: "Equal"
@@ -50,12 +63,25 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-two
-    image: jmaks.azurecr.io/vbserver:3.2
+    image: jmaks.azurecr.io/vbserver:3.6
     ports:
     - containerPort: 9001
       name: telnet
     - containerPort: 9144
       name: metrics
+    resources:
+      limits:
+        memory: 350Mi
+    readinessProbe:
+      tcpSocket:
+        port: 9001
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    livenessProbe:
+      tcpSocket:
+        port: 9001
+      initialDelaySeconds: 15
+      periodSeconds: 20
   tolerations:
   - key: "os"
     operator: "Equal"
@@ -94,12 +120,15 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-three
-    image: jmaks.azurecr.io/vbserver:3.2
+    image: jmaks.azurecr.io/vbserver:3.6
     ports:
     - containerPort: 9001
       name: telnet
     - containerPort: 9144
       name: metrics
+    resources:
+      limits:
+        memory: 350Mi
     readinessProbe:
       tcpSocket:
         port: 9001

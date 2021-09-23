@@ -24,6 +24,12 @@ metrics:
   match: '%{TIMESTAMP_ISO8601} INFO %{USERNAME:name}: %{QS:data}'
   labels:
       user: '{{.name}}'
+- type: gauge
+  name: app_connections
+  help: Number of connections
+  match: "%{TIMESTAMP_ISO8601} TRACE CONNECTED: \'%{INT:connectioncount}\'"
+  value: '{{.connectioncount}}'
+  cumulative: false
 server:
   protocol: http
   port: 9144
