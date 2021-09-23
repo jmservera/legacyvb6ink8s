@@ -40,7 +40,7 @@ Option Explicit
 Private intMax As Integer
 Private lastTime As Date
 
-Const MAXCONNS As Integer = 15
+Const MAXCONNS As Integer = 4096
 
 Public Running As Boolean
 
