@@ -6,7 +6,7 @@ Attribute VB_Name = "MainModule"
 ' This code requires a reference to Microsoft Scripting Runtime
 ' used for console output
 Private sout As Scripting.TextStream
-
+Private server1 As New Server
 Option Explicit
 
 Private Declare Sub GetLocalTime Lib "kernel32" (lpSystemTime As SYSTEMTIME)
@@ -23,14 +23,12 @@ End Type
 
 Sub Main()
    On Error GoTo ProcError
-   Dim server1 As New Server
       
    Dim FSO As New Scripting.FileSystemObject
    Set sout = FSO.GetStandardStream(StdOut)
        
    LogMessage "server_start", CStr(Now)
    Load server1
-   
 
 ProcExit:
    LogMessage "server_exit", CStr(Now)
@@ -49,6 +47,16 @@ Private Sub Log(value As String)
     Dim logmsg As String
 
     logmsg = GetIsoTimestamp() & " " & value
+
+    On Error Resume Next
+    If server1.Running Then
+        If server1.Visible Then
+            server1.Text1.Text = server1.Text1.Text + value + vbCrLf
+            server1.Text1.SelStart = Len(server1.Text1.Text)
+            
+        End If
+    End If
+    On Error GoTo 0
 
     On Error Resume Next
     sout.WriteLine (logmsg)

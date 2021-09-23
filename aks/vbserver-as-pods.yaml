@@ -10,7 +10,7 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-one
-    image: jmaks.azurecr.io/vbserver:3.8
+    image: jmaks.azurecr.io/vbserver:3.10
     ports:
     - containerPort: 9001
       name: telnet
@@ -63,7 +63,7 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-two
-    image: jmaks.azurecr.io/vbserver:3.8
+    image: jmaks.azurecr.io/vbserver:3.10
     ports:
     - containerPort: 9001
       name: telnet
@@ -120,7 +120,7 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-three
-    image: jmaks.azurecr.io/vbserver:3.8
+    image: jmaks.azurecr.io/vbserver:3.10
     ports:
     - containerPort: 9001
       name: telnet

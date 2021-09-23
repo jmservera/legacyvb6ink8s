@@ -2,15 +2,25 @@ VERSION 5.00
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form Server 
    Caption         =   "Form1"
-   ClientHeight    =   6525
-   ClientLeft      =   120
-   ClientTop       =   465
-   ClientWidth     =   7305
+   ClientHeight    =   9435
+   ClientLeft      =   6810
+   ClientTop       =   2490
+   ClientWidth     =   13680
    LinkTopic       =   "Form1"
-   ScaleHeight     =   6525
-   ScaleWidth      =   7305
-   StartUpPosition =   3  'Windows Default
+   ScaleHeight     =   9435
+   ScaleWidth      =   13680
    Visible         =   0   'False
+   Begin VB.TextBox Text1 
+      Enabled         =   0   'False
+      Height          =   9015
+      Left            =   960
+      MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
+      TabIndex        =   0
+      Text            =   "Server.frx":0000
+      Top             =   240
+      Width           =   12495
+   End
    Begin MSWinsockLib.Winsock tcpServer 
       Index           =   0
       Left            =   360
@@ -30,16 +40,17 @@ Option Explicit
 Private intMax As Integer
 Private lastTime As Date
 
-Const MAXCONNS As Integer = 4096
+Const MAXCONNS As Integer = 15
 
 Public Running As Boolean
 
 Private Sub Form_Load()
     Dim i As Long
     
-    Running = True
+'    Me.Show
     
-    'On Error GoTo ProcError
+    Running = True
+    On Error GoTo ProcError
     intMax = 0
     tcpServer(0).LocalPort = 9001
     lastTime = Now
@@ -55,6 +66,9 @@ Private Sub Form_Load()
             reviewTimer
             lastTime = Now
         End If
+        If Not Running Then
+         Exit Sub
+        End If
     Loop
     Exit Sub
 ProcError:
@@ -63,6 +77,7 @@ ProcError:
   LogError Err.Number, Err.Source, Err.Description
   End
 End Sub
+
 
 Private Sub reviewTimer()
     Dim i As Long
@@ -79,6 +94,18 @@ Private Sub reviewTimer()
     LogTrace "CONNECTED", CStr(count)
 End Sub
 
+Private Sub Form_Resize()
+Text1.Top = 10
+Text1.Left = 10
+Text1.Width = Me.ScaleWidth - 55
+Text1.Height = Me.ScaleHeight - 55
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+    Running = False
+    
+End Sub
+
 Private Sub tcpServer_Error(index As Integer, ByVal Number As Integer, Description As String, ByVal Scode As Long, ByVal Source As String, ByVal HelpFile As String, ByVal HelpContext As Long, CancelDisplay As Boolean)
     removeServer (index)
     LogError Number, Source, Description
@@ -93,20 +120,28 @@ End Sub
 Private Sub tcpServer_DataArrival(index As Integer, ByVal bytesTotal As Long)
         Dim Data As String
 
-        tcpServer(index).GetData Data
-
-        LogTrace "data", Data
-
-        If Data = "SHUTDOWN" Or Data = "SHUTDOWN" + vbCrLf Or Data = "Shutdown" + vbLf Then
-            tcpServer(index).SendData ("Goodbye, server shutdown started" + vbCrLf)
-            DoEvents
-            LogMessage "shutdown", ""
-            End
+        If bytesTotal > 0 Then
+            'On Error GoTo dataError
+            tcpServer(index).GetData Data
+    
+            LogTrace "data", Data
+    
+            If Data = "SHUTDOWN" Or Data = "SHUTDOWN" + vbCrLf Or Data = "Shutdown" + vbLf Then
+                tcpServer(index).SendData ("Goodbye, server shutdown started" + vbCrLf)
+                DoEvents
+                LogMessage "shutdown", ""
+                End
+            End If
+            
+            If Data = vbCr Or Data = vbLf Or Data = vbCrLf Then
+               tcpServer(index).SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN END OF LINE IS RECEIVED
+            End If
         End If
+        On Error GoTo 0
+        Exit Sub
+dataError:
+    LogError Err.Number, Err.Source, Err.Description
         
-        If Data = vbCr Or Data = vbLf Or Data = vbCrLf Then
-           tcpServer(index).SendData ("OK" + vbCrLf) ' RETURN VALUE WHEN END OF LINE IS RECEIVED
-        End If
 End Sub
 
 Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Long)
@@ -123,12 +158,14 @@ Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Lon
 
             If tcpServer.UBound < intMax Then
                 Load tcpServer(intMax)
+                tcpServer(intMax).LocalPort = 0
             Else
                 ' find a free one
                 For i = intMax To tcpServer.UBound
                     If tcpServer(i).State <> sckConnected Then
-                        tcpServer(intMax).Close
                         intMax = i
+                        tcpServer(i).Close
+                        DoEvents
                         GoTo subConnect
                     Else
                         If i = tcpServer.UBound Then
@@ -137,12 +174,9 @@ Private Sub tcpServer_ConnectionRequest(index As Integer, ByVal requestid As Lon
                         End If
                     End If
                 Next
-                
-                DoEvents
             End If
 subConnect:
             LogTrace "INTMAX", CStr(intMax)
-            tcpServer(intMax).LocalPort = 0
             tcpServer(intMax).Accept requestid
             ' SEND SERVER INFO TO CLIENT
             tcpServer(intMax).SendData ("Connected to server: " + tcpServer(intMax).LocalHostName + vbCrLf)
@@ -162,3 +196,4 @@ Private Sub removeServer(index As Long)
     End If
     DoEvents
 End Sub
+
