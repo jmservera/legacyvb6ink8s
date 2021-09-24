@@ -12,10 +12,11 @@ Private server1 As New Server
 
 Sub Main()
    On Error GoTo procError
-      
+
    Dim FSO As New Scripting.FileSystemObject
    Set sout = FSO.GetStandardStream(StdOut)
-       
+
+   LoadConfig    
    LogMessage "server_start", CStr(Now)
    Load server1
 
