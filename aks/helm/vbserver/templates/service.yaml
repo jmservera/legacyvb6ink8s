@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vbserver.fullname" . }}
+  labels:
+    {{- include "vbserver.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 9001
+      protocol: TCP
+      name: telnet
+  selector:
+    {{- include "vbserver.selectorLabels" . | nindent 4 }}
