@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vbserver-deployment
+  annotations:
+    kubernetes.io/change-cause: "update 3.14" # important info for history and rollback
+spec:
+  selector:
+    matchLabels:
+      pod-name: vbserver-pod
+  template:
+    metadata:
+      labels:
+        pod-name: vbserver-pod
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: vbserver-container
+        image: jmaks.azurecr.io/vbserver:3.14
+        ports:
+        - containerPort: 9001
+          name: telnet
+        - containerPort: 9144
+          name: metrics
+        resources:
+          limits:
+            memory: 350Mi
+        readinessProbe:
+          tcpSocket:
+            port: 9001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 9001
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      tolerations:
+      - key: "os"
+        operator: "Equal"
+        value: "windows"
+        effect: "NoSchedule" 

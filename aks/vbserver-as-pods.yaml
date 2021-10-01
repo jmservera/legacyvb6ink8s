@@ -10,12 +10,12 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-one
-    image: jmaks.azurecr.io/vbserver:3.12
+    image: jmaks.azurecr.io/vbserver:3.11
     ports:
-    - containerPort: 9001
-      name: telnet
-    - containerPort: 9144
-      name: metrics
+      - containerPort: 9001
+        name: telnet
+      - containerPort: 9144
+        name: metrics
     resources:
       limits:
         memory: 350Mi
@@ -63,7 +63,7 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-two
-    image: jmaks.azurecr.io/vbserver:3.12
+    image: jmaks.azurecr.io/vbserver:3.11
     ports:
     - containerPort: 9001
       name: telnet
@@ -120,7 +120,7 @@ spec:
     "kubernetes.io/os": windows
   containers:
   - name: vbserver-three
-    image: jmaks.azurecr.io/vbserver:3.12
+    image: jmaks.azurecr.io/vbserver:3.11
     ports:
     - containerPort: 9001
       name: telnet
