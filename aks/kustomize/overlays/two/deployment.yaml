@@ -8,6 +8,6 @@ spec:
       containers:
       - env:
         - name: MAX_CONNS
-          value: "256"
+          value: "1024"
         name: vbserver-container
           

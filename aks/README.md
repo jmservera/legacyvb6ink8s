@@ -12,6 +12,18 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --
     --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 ```
 
-[windows_exporter]:https://github.com/prometheus-community/windows_exporter
+3. `helm` folder: contains an example helm template to deploy this application using [Helm][helm]
+4. `kustomize` folder: contains an example template to deploy multiple pods and services for this app using Kustomize. You can deploy the full app using this command inside the `kustomize` folder:
+
+    ```bash
+    kubectl apply -k .
+    ```
+    or you can also see what it will be created by running
+    ```bash
+    kubectl kustomize .
+    ```
+
 [grok_exporter]:https://github.com/fstab/grok_exporter
+[helm]: https://helm.sh/
 [prometheus_operator]: https://github.com/prometheus-operator/prometheus-operator
+[windows_exporter]:https://github.com/prometheus-community/windows_exporter
