@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: vbserver-deployment
   annotations:
-    kubernetes.io/change-cause: "update 3.13" # important info for history and rollback
+    kubernetes.io/change-cause: "update MAXCONNS" # important info for history and rollback
 spec:
   selector:
     matchLabels:

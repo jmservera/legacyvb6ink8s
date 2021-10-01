@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - env:
-        - name: MAX_CONNS
+        - name: MAXCONNS
           value: "256"
         name: vbserver-container
           
