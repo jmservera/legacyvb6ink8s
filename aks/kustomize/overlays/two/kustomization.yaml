@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ns-two
+nameSuffix: "-two"
+
+commonLabels:
+  app: vbserver-two
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+
+ - deployment.yaml
+
+patchesJson6902:
+- target:
+    version: v1 # apiVersion
+    kind: Namespace
+    name: base
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: ns-two

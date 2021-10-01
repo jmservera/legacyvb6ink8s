@@ -1,0 +1,4 @@
+resources:
+- overlays/one
+- overlays/two
+namePrefix: winnp-

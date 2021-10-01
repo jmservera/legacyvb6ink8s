@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "vbserver.fullname" . }}-test-connection"
+  labels:
+    {{- include "vbserver.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: telnet
+      image: busybox
+      command: ['/bin/sh','-ec','echo QUIT | nc -w 5 {{ include "vbserver.fullname" . }} {{ .Values.service.port }}']
+  restartPolicy: Never

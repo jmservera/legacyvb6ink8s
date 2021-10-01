@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vbserver-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: vbserver
+  ports:
+    - protocol: TCP
+      port: 9001
+      targetPort: 9001
