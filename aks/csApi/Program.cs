@@ -5,7 +5,6 @@ namespace csApi
     using System.Collections.Generic;
     using k8s;
     using k8s.Models;
-    using static k8s.Models.V1Patch;
 
     class Program
     {
@@ -20,31 +19,21 @@ namespace csApi
             {
                 Console.WriteLine(item.Metadata.Name);
             }
+            
             if (list.Items.Count == 0)
             {
                 Console.WriteLine("Empty!");
             }
 
-            try{
+            try
+            {
                 CreateDeployment(client);
             }
-            catch(Exception ex){
-                Console.WriteLine($"Deployment may exist, updating: ${ex.Message}");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Deployment may exist, updating: {ex.Message}");
                 UpdateDeployment(client);
-
             }
-        }
-
-        private static void UpdateDeployment(IKubernetes client)
-        {
-
-            var patch=new V1Patch(
-                @"{""spec"":{""template"":{""spec"":{""containers"":[{""name"":""nginx"",""image"":""nginx:1.8""}]}}}}",
-                PatchType.MergePatch
-            );
-            V1Deployment deployment= client.PatchNamespacedDeployment(patch,"my-nginx","default" );
-            Console.WriteLine($"Deployment updated: {deployment.Name()}");
-
         }
 
         static void CreateDeployment(IKubernetes client)
@@ -56,12 +45,12 @@ namespace csApi
             deployment.Metadata.Labels.Add("app", "nginx");
             deployment.Spec = new V1DeploymentSpec();
             deployment.Spec.Replicas = 1;
-            deployment.Spec.Selector = new V1LabelSelector();         
+            deployment.Spec.Selector = new V1LabelSelector();
             deployment.Spec.Selector.MatchLabels = new Dictionary<string, string>();
             deployment.Spec.Selector.MatchLabels.Add("app", "nginx");
             deployment.Spec.Template = new V1PodTemplateSpec();
             deployment.Spec.Template.Metadata = new V1ObjectMeta();
-            deployment.Spec.Template.Metadata.Labels = new Dictionary<string, string>();        
+            deployment.Spec.Template.Metadata.Labels = new Dictionary<string, string>();
             deployment.Spec.Template.Metadata.Labels.Add("app", "nginx");
             deployment.Spec.Template.Spec = new V1PodSpec();
             deployment.Spec.Template.Spec.Containers = new List<V1Container>();
@@ -72,10 +61,19 @@ namespace csApi
             deployment.Spec.Template.Spec.Containers[0].Ports.Add(new V1ContainerPort());
             deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort = 80;
 
-            var result= client.CreateNamespacedDeployment(deployment,"default");
+            var result = client.CreateNamespacedDeployment(deployment, "default");
             Console.WriteLine(result.Metadata.Name);
             Console.WriteLine(result.ToString());
- 
+        }
+
+        private static void UpdateDeployment(IKubernetes client)
+        {
+            var patch = new V1Patch(
+                @"{""spec"":{""template"":{""spec"":{""containers"":[{""name"":""nginx"",""image"":""nginx:1.8""}]}}}}",
+                V1Patch.PatchType.MergePatch
+            );
+            V1Deployment deployment = client.PatchNamespacedDeployment(patch, "my-nginx", "default");
+            Console.WriteLine($"Deployment updated: {deployment.Metadata.Name}");
         }
     }
 }
