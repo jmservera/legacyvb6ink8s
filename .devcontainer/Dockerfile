@@ -1,8 +1,24 @@
-# escape=`
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
-LABEL maintainer="https://github.com/jmservera"                                         `
-    org.opencontainers.image.authors="https://github.com/jmservera"                     `
-    org.opencontainers.image.url="[pending]"                                            `
-    org.opencontainers.image.title="VB6 PoC"                                             `
-    org.opencontainers.image.description="Windows container with a small VB6 PoC"  `
-    org.opencontainers.image.source="https://github.com/jmservera/legacyvb6ink8s" 
+FROM telyn/wine-vcrun6
+MAINTAINER telyn <telyn@aetheria.co.uk>
+
+ARG KEY
+ARG STF
+
+USER wine
+ENV HOME /home/wine
+ENV WINEPREFIX /home/wine/.wine
+ENV WINEARCH win32
+WORKDIR /home/wine
+
+# copy visual studio sources... 
+COPY vs vs/
+# copy SETUP into root of VS sources (needed for acmsetup)
+COPY vs/SETUP vs/
+
+# copy the stf (installer template) we're working with
+COPY ${STF:-VB6.STF} vs/ACMSETUP.STF
+
+COPY install.sh .
+RUN rm -r /tmp/.wine-1000
+RUN ./install.sh 1234567
+#$KEY
